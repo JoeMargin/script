@@ -1,6 +1,13 @@
 --[[ This is work in progress ]]
 --[[ Might make it non tool ]]
 --[[ Skiddable ]]
+local name
+if _G.bn1001yes and typeof(_G.bn1001yes) == "string" then
+	name = _G.bn1001yes 
+else
+	name = "Bang"
+end
+
 local tool
 local localplayer = game.Players.LocalPlayer
 local target = nil
@@ -19,7 +26,7 @@ function createtool(_)
 	if touched then touched:Disconnect() end
 	if ue then ue:Disconnect() end
 	tool = Instance.new("Tool",localplayer:FindFirstChild("Backpack"))
-	tool.Name = "Bang"
+	tool.Name = name
 	local handle = Instance.new("Part",tool)
 	handle.Name = "Handle"
 	handle.Transparency = 1

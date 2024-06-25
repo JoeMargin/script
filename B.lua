@@ -1,13 +1,19 @@
 --[[ This is work in progress ]]
-
+--[[ Might make it non tool ]]
+--[[ Skiddable ]]
 local tool
 local localplayer = game.Players.LocalPlayer
 local target = nil
 local ff
 local touched
 local ue
-local interval = 20/100
-local count
+local interval
+if _G.bsp1001yes then 
+	interval = math.clamp(_G.bsp1001yes,0,1)
+else
+	interval = 20/100
+end
+local count = 0
 local goback = false
 function createtool(_)
 	if touched then touched:Disconnect() end
@@ -27,40 +33,31 @@ function createtool(_)
 			localplayer.Character:FindFirstChild("Humanoid").PlatformStand = false]]
 			--localplayer.Character:FindFirstChild("Humanoid").RootPart.Anchored = true
 			target = part.Parent
-			ff = task.spawn(function()
-
-
-				count = 0
-				while true do
-					game:GetService("RunService").Heartbeat:Wait()
-					if target and target:FindFirstChild("Humanoid").RootPart then
-						--localplayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Physics)
-						if goback then
-							count -= interval
-						elseif not goback then
-							count += interval
-						end
-
-						if count >= 1 then
-							count = 1
-							goback = true
-						elseif count <= 0 then
-							count = 0
-							goback = false
-						end
-						
-						localplayer.Character:FindFirstChild("Humanoid").RootPart.CFrame = target:FindFirstChild("Humanoid").RootPart.CFrame * CFrame.new(0,0,1) * CFrame.Angles(math.rad((-30 * count) + 10),0,0)
-						localplayer.Character:FindFirstChild("Humanoid").RootPart.Velocity = Vector3.zero
-					else
-						break
+			count = 0
+			ff = game:GetService("RunService").PostSimulation:Connect(function()
+				if target and target:FindFirstChild("Humanoid").RootPart then
+					if goback then
+						count -= interval
+					elseif not goback then
+						count += interval
 					end
 
+					if count >= 1 then
+						count = 1
+						goback = true
+					elseif count <= 0 then
+						count = 0
+						goback = false
+					end
+
+					localplayer.Character:FindFirstChild("Humanoid").RootPart.CFrame = target:FindFirstChild("Humanoid").RootPart.CFrame * CFrame.new(0,0,0.75) * CFrame.Angles(math.rad((-30 * count) + 10),0,0) * CFrame.new(0,0,1 * count)
+					localplayer.Character:FindFirstChild("Humanoid").RootPart.Velocity = Vector3.zero
 				end
 			end)
 		end
 	end)
 	ue = tool.Unequipped:Connect(function()
-		if ff then task.cancel(ff) end
+		if ff then ff:Disconnect() end
 		ff = nil
 		target = nil
 		--localplayer.Character:FindFirstChild("Humanoid").RootPart.Anchored = false

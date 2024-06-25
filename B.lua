@@ -75,7 +75,7 @@ function createtool(_)
 
 end
 
-
+createtool(nil)
 
 localplayer.CharacterAdded:Connect(createtool)
 

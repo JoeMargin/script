@@ -48,6 +48,7 @@ function createtool(_)
 							count = 0
 							goback = false
 						end
+						localplayer.Character:FindFirstChild("Humanoid").RootPart.Velocity = Vector3.zero
 						localplayer.Character:FindFirstChild("Humanoid").RootPart.CFrame = target:FindFirstChild("Humanoid").RootPart.CFrame * CFrame.new(0,0,1) * CFrame.Angles(math.rad((-30 * count) + 10),0,0)
 					else
 						break

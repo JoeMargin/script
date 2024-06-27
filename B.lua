@@ -21,7 +21,7 @@ local ts = game:GetService("TweenService")
 Bang.Name = "Bang"
 Bang.Parent = lplr:FindFirstChild("PlayerGui")
 Bang.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Bang.ResetOnSpawn = true
+Bang.ResetOnSpawn = false
 Bang.IgnoreGuiInset = true
 Bang.DisplayOrder = 10000
 

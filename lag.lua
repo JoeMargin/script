@@ -12,7 +12,8 @@ local uis = game:GetService("UserInputService")
 local lplr = game.Players.LocalPlayer
 
 LagAnchor.Name = "LagAnchor"
-LagAnchor.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+LagAnchor.Parent = game.CoreGui
+LagAnchor.DisplayOrder = 1000
 LagAnchor.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 LagAnchor.ResetOnSpawn = false
 
@@ -115,6 +116,7 @@ local toggleval = false
 
 Toggle.MouseButton1Click:Connect(function()
 	if toggleval then
+		lplr.Character:FindFirstChildOfClass("Humanoid").RootPart.Anchored = false
 		Toggle.Text = "Off"
 		Toggle.BackgroundColor3 = Color3.fromRGB(128,0,0)
 		toggleval = false

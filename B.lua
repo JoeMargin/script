@@ -21,6 +21,7 @@ local ts = game:GetService("TweenService")
 Bang.Name = "Bang"
 Bang.Parent = game.CoreGui
 Bang.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Bang.ResetOnSpawn = false
 
 Topbar.Name = "Topbar"
 Topbar.Parent = Bang

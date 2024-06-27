@@ -19,11 +19,14 @@ local uis = game:GetService("UserInputService")
 local ts = game:GetService("TweenService")
 
 Bang.Name = "Bang"
-Bang.Parent = game.CoreGui
+Bang.Parent = lplr:FindFirstChild("PlayerGui")
 Bang.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Bang.ResetOnSpawn = false
+Bang.ResetOnSpawn = true
+Bang.IgnoreGuiInset = true
+Bang.DisplayOrder = 10000
 
 Topbar.Name = "Topbar"
+Topbar.AnchorPoint = Vector2.new(0.5,0)
 Topbar.Parent = Bang
 Topbar.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 Topbar.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -136,6 +139,8 @@ Username.PlaceholderText = "Player Name or Display Name..."
 Username.Text = "You"
 Username.TextColor3 = Color3.fromRGB(255, 255, 255)
 Username.TextSize = 14.000
+Username.Active = false
+Username.Visible = false
 
 Show.Name = "Show"
 Show.Parent = Bang
@@ -200,16 +205,39 @@ Speed.MouseButton1Click:Connect(function()
 	end
 	
 end)
+local hstinfo2 = TweenInfo.new(0.3,Enum.EasingStyle.Circular,Enum.EasingDirection.Out)
+
+local su = {}
+su.Position = UDim2.fromScale(1,0.1)
+local hu = {}
+hu.Position = UDim2.fromScale(0,0.1)
+
+local au = nil
 
 Mode.MouseButton1Click:Connect(function()
 	if wfc then return end
 	if pnamemode then
+		if au then
+			au:Pause()
+			au:Destroy()
+			au = nil
+		end
+		au = ts:Create(Username,hstinfo2,hu)
 		Mode.Text = "Mode : By touch"
-		Username.Position = UDim2.fromScale(0,0.1)
+		au:Play()
 		pnamemode = not pnamemode
+		au.Completed:Wait()
+		Username.Visible = false
 	elseif not pnamemode then
+		if au then
+			au:Pause()
+			au:Destroy()
+			au = nil
+		end
+		au = ts:Create(Username,hstinfo2,su)
 		Mode.Text = "Mode : By name"
-		Username.Position = UDim2.fromScale(1,0.1)
+		Username.Visible = true
+		au:Play()
 		pnamemode = not pnamemode
 	end
 end)
@@ -281,13 +309,14 @@ game:GetService("RunService").PreSimulation:Connect(function(dt)
 	
 end)
 
-local hstinfo = TweenInfo.new(1,Enum.EasingStyle.Circular,Enum.EasingDirection.Out)
+
 
 
 local hidep = {}
 hidep.Size = UDim2.fromScale(0.3,0)
 local showp = {}
 showp.Size = UDim2.fromScale(0.3,0.2)
+local hstinfo = TweenInfo.new(1,Enum.EasingStyle.Circular,Enum.EasingDirection.Out)
 
 Hide.MouseButton1Click:Connect(function()
 	if Topbar.Visible then

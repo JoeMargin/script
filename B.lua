@@ -188,6 +188,40 @@ local wfc = false
 local target = nil
 local curspeed = 1
 
+local animob = Instance.new("Animation")
+
+
+local track : AnimationTrack
+if lplr.Character and lplr.Character:FindFirstChildOfClass("Humanoid") then
+	
+	if lplr.Character:FindFirstChildOfClass("Humanoid").RigType == Enum.HumanoidRigType.R6 then
+		animob.AnimationId = "http://www.roblox.com/asset/?id=125750702"
+	else
+		animob.AnimationId = "http://www.roblox.com/asset/?id=10921263860"
+	end
+	
+	track = lplr.Character:FindFirstChildOfClass("Humanoid"):LoadAnimation(animob)
+	track.Priority = Enum.AnimationPriority.Action
+	track.Looped = true
+	--track.Speed = 5
+end
+
+lplr.CharacterAdded:Connect(function()
+	if lplr.Character and lplr.Character:FindFirstChildOfClass("Humanoid") then
+		
+		if lplr.Character:FindFirstChildOfClass("Humanoid").RigType == Enum.HumanoidRigType.R6 then
+			animob.AnimationId = "http://www.roblox.com/asset/?id=125750702"
+		else
+			animob.AnimationId = "http://www.roblox.com/asset/?id=10921263860"
+		end
+		
+		track = lplr.Character:FindFirstChildOfClass("Humanoid"):LoadAnimation(animob)
+		track.Priority = Enum.AnimationPriority.Action
+		track.Looped = true
+		--track.Speed = 5
+	end
+end)
+
 Speed.MouseButton1Click:Connect(function()
 	if tonumber(SpeedNum.Text) then
 		curspeed = tonumber(SpeedNum.Text)
@@ -203,7 +237,7 @@ Speed.MouseButton1Click:Connect(function()
 		task.wait(0.2)
 		Speed.Active = true
 	end
-	
+
 end)
 local hstinfo2 = TweenInfo.new(0.3,Enum.EasingStyle.Circular,Enum.EasingDirection.Out)
 
@@ -268,7 +302,7 @@ StopPlay.MouseButton1Click:Connect(function()
 						wfc = false
 						lplr.Character:FindFirstChild("Humanoid").PlatformStand = true
 						StopPlay.Text = "Stop Bang"
-						touched = touched:Disconnect()
+						touched:Disconnect()
 					end
 				end)
 			end
@@ -282,31 +316,51 @@ StopPlay.MouseButton1Click:Connect(function()
 		touched:Disconnect()
 		StopPlay.Text = "Do Bang"
 	end
-	
+
 end)
 
 local rev = false
 local eft = 0
+
+
+
 game:GetService("RunService").PreSimulation:Connect(function(dt)
 	if rev then
 		eft -= dt
 	elseif not rev then
 		eft += dt
 	end
-	if eft >= curspeed then
-		eft = curspeed
+	if eft >= 1/curspeed then
+		eft = 1/curspeed
 		rev = true
 	elseif eft <= 0 then
 		eft = 0
 		rev = false
 	end
-	local count = eft/curspeed
-	
+	local count = eft/(1/curspeed)
+
 	if target then
 		lplr.Character:FindFirstChild("Humanoid").RootPart.CFrame = target:FindFirstChild("Humanoid").RootPart.CFrame * CFrame.new(0,0,0.5) * CFrame.Angles(math.rad((-30 * count) + 10),0,0) * CFrame.new(0,0,1 * count)
 		lplr.Character:FindFirstChild("Humanoid").RootPart.Velocity = Vector3.zero
+		if track and not track.IsPlaying then
+			task.spawn(function()
+				track:Play()
+				task.wait(0.1)
+				
+				repeat
+					track:AdjustSpeed(curspeed*0.1)
+					repeat task.wait(); track.TimePosition = math.clamp(track.TimePosition,0.04,0.2) until rev
+					track:AdjustSpeed(-curspeed*0.1)
+					repeat task.wait(); track.TimePosition = math.clamp(track.TimePosition,0.04,0.2) until not rev
+				until not target
+			end)
+		end
+	else
+		if track and track.IsPlaying then
+			track:Stop()
+		end
 	end
-	
+
 end)
 
 
